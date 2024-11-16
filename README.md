@@ -8,7 +8,7 @@ Designing an n-Tier Software Architecture for an Internet of Things (IoT)
 application involves separating concerns into different layers, each responsible for specific aspects of the system. 
 Below is a proposed architecture that meets the specified requirements for the target Playground and Example:
 
-The idea of the architecture is the following: 
+The idea of the architecture (using the framework [https://mermaid.js.org/](https://mermaid.js.org/)) is the following: 
 
 ```mermaid
 graph TD
