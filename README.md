@@ -12,36 +12,33 @@ The idea of the architecture is the following:
 
 ```mermaid
 graph TD
-  subgraph Presentation Layer
+  subgraph Presentation-Layer
     A1[Web Interface]
   end
   
-  subgraph Application Layer
+  subgraph Application-Layer
     B1[Web Server]
     B2[RESTful API]
   end
   
-  subgraph Business Logic Layer
+  subgraph BusinessLogic-Layer
     C1[Business Logic Services]
   end
   
-  subgraph Data Access Layer
+  subgraph DataAccess-Layer
     D1[Protocol Handlers - MQTT]
     D2[Data Management]
   end
   
-  subgraph Data Storage Layer
+  subgraph DataStorage-Layer
     E1[SQL Database]
     E2[Time-Series DB]
   end
 
-  A1 --> B1
-  B1 --> B2
-  B2 --> C1
-  C1 --> D1
-  D1 --> D2
-  D2 --> E1
-  D2 --> E2
+  Presentation-Layer --> Application-Layer
+  Application-Layer --> BusinessLogic-Layer
+  BusinessLogic-Layer --> DataAccess-Layer
+  DataAccess-Layer --> DataStorage-Layer
 ```
 
 1. **Presentation Layer (Client Tier)**
