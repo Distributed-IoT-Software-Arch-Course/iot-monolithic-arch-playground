@@ -8,15 +8,51 @@ Designing an n-Tier Software Architecture for an Internet of Things (IoT)
 application involves separating concerns into different layers, each responsible for specific aspects of the system. 
 Below is a proposed architecture that meets the specified requirements for the target Playground and Example:
 
+The idea of the architecture is the following: 
+
+```mermaid
+graph TD
+  subgraph Presentation Layer
+    A1[Web Interface]
+  end
+  
+  subgraph Application Layer
+    B1[Web Server]
+    B2[RESTful API]
+  end
+  
+  subgraph Business Logic Layer
+    C1[Business Logic Services]
+  end
+  
+  subgraph Data Access Layer
+    D1[Protocol Handlers - MQTT]
+    D2[Data Management]
+  end
+  
+  subgraph Data Storage Layer
+    E1[SQL Database]
+    E2[Time-Series DB]
+  end
+
+  A1 --> B1
+  B1 --> B2
+  B2 --> C1
+  C1 --> D1
+  D1 --> D2
+  D2 --> E1
+  D2 --> E2
+```
+
 1. **Presentation Layer (Client Tier)**
     - Responsibilities:
-      - Provide a user interface for interacting with the IoT system. 
+      - Provide a user interface for interacting with the information and data of IoT devices. 
       - Display device information and telemetry data. 
-      - Allow users to interact with the RESTful API.
+      - Allow users to interact with the RESTful API
     - Components:
       - Web Interface (Frontend):
-      - Technologies: HTML, CSS, JavaScript (React.js, Angular, or Vue.js)
-      - Responsibilities: Display data, provide user controls, and handle user inputs.
+        - Technologies: HTML, CSS, JavaScript (React.js, Angular, or Vue.js)
+        - Responsibilities: Display data, provide user controls, and handle user inputs.
 2. **Application Layer (Web Server Tier)**
     - Responsibilities:
       - Serve the web interface to clients. 
@@ -43,38 +79,40 @@ Below is a proposed architecture that meets the specified requirements for the t
       - Collect device information and telemetry data.
     - Components:
       - Protocol Handlers:
-      - Technologies: MQTT.js (Node.js), Paho MQTT (Python), HiveMQ (Java)
+        - Technologies: MQTT.js (Node.js), Paho MQTT (Python), HiveMQ (Java)
     - Responsibilities: Collect data from devices using protocols like MQTT. 
       - Data Aggregators:
-      - Responsibilities: Aggregate data from multiple protocol handlers and send it to the data storage layer.
+        - Responsibilities: Aggregate data from multiple protocol handlers and send it to the data storage layer.
 5. **Data Storage Layer (Data Tier)**
    - Responsibilities:
      - Store device information and telemetry data.
      - Provide data access to the upper layers.
    - Components:
      - Database:
-       - Technologies: PostgreSQL, MySQL, MongoDB
+        - Technologies: PostgreSQL, MySQL, MongoDB
+        - **In our simplified scenario both structured and unstructured data will be stored in memory.**
    - Responsibilities: Store structured device information (inventory) and unstructured telemetry data.
        - Time-Series Database (optional for telemetry):
        - Technologies: InfluxDB, TimescaleDB
        - Responsibilities: Efficiently store and query time-series telemetry data.
 
-Detailed Architecture Diagram
+### Detailed Architecture Diagram
+
 Below is a high-level architecture diagram outlining the components and their interactions:
 
 ```sql
  +-------------------------+
  |     Presentation Layer  |
  |-------------------------|
- |  Web Interface (React)  |
+ |      Web Interface      |
  +-------------------------+
              |
              V
  +-------------------------+
  |     Application Layer   |
  |-------------------------|
- | Web Server (Node.js)    |
- | RESTful API             |
+ |       Web Server        |
+ |      RESTful API        |
  +-------------------------+
              |
              V
@@ -89,15 +127,15 @@ Below is a high-level architecture diagram outlining the components and their in
  |   Data Access Layer     |
  |-------------------------|
  | Protocol Handlers (MQTT)|
- | Data Aggregators        |
+ | Data Management         |
  +-------------------------+
              |
              V
  +-------------------------+
  |     Data Storage Layer  |
  |-------------------------|
- |  Database (PostgreSQL)  |
- |  Time-Series DB (InfluxDB) |
+ |      SQL Database       |
+ |      Time-Series DB     |
  +-------------------------+
 ```
 
