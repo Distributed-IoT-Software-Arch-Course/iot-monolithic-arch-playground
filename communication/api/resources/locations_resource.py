@@ -1,6 +1,8 @@
 from json import JSONDecodeError
 from flask import request, Response
 from flask_restful import Resource
+
+from application.core_manager import CoreManager
 from communication.api.dto.location_entity_response import LocationEntityResponse
 from communication.api.dto.location_creation_request import LocationCreationRequest
 from application.model.location_model import LocationModel
@@ -9,21 +11,22 @@ from application.model.location_model import LocationModel
 class LocationsResource(Resource):
 
     def __init__(self, **kwargs):
-        self.data_manager = kwargs['data_manager']
+        self.core_manager: CoreManager = kwargs['core_manager']
 
     def post(self):
+        """Create a new location"""
         try:
             # The boolean flag force the parsing of POST data as JSON irrespective of the mimetype
             json_data = request.get_json(force=True)
             location_creation_request = LocationCreationRequest(**json_data)
-            if location_creation_request.uuid in self.data_manager.location_dictionary:
+            if self.core_manager.is_location_registered(location_creation_request.uuid):
                 return {'error': "Location UUID already exists"}, 409  # return data and 200 OK code
             else:
                 new_location_model = LocationModel(location_creation_request.uuid,
                                                    location_creation_request.name,
                                                    location_creation_request.latitude,
                                                    location_creation_request.longitude)
-                self.data_manager.add_location(new_location_model)
+                self.core_manager.add_location(new_location_model)
                 return Response(status=201, headers={"Location": request.url+"/"+new_location_model.uuid})  # Force the No-Content Response
         except JSONDecodeError:
             return {'error': "Invalid JSON ! Check the request"}, 400
@@ -35,7 +38,7 @@ class LocationsResource(Resource):
         # Iterate over the dictionary to build a serializable device list
         result_location_list = []
 
-        for location in self.data_manager.location_dictionary.values():
+        for location in self.core_manager.get_all_locations():
 
             # Iterate over the dictionary to build a serializable device id list
             device_id_list = []

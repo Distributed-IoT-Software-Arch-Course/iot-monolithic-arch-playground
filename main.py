@@ -1,8 +1,8 @@
-from data.manager.data_manager import DataManager
 from communication.api.rest_api_server import RestApiServer
 from communication.web.web_server import WebServer
 from communication.mqtt.mqtt_data_fetcher import MqttDataFetcher
 from application.core_manager import CoreManager
+from data.manager.data_manager import DataManager
 
 API_CONFIG_FILE = "config/api_conf.yaml"
 WEB_CONFIG_FILE = "config/web_conf.yaml"
@@ -20,13 +20,13 @@ if __name__ == '__main__':
     core_manager = CoreManager(data_manager)
 
     # Create RESTful API Server
-    rest_api_server = RestApiServer(API_CONFIG_FILE, data_manager)
+    rest_api_server = RestApiServer(API_CONFIG_FILE, core_manager)
 
     # Run RESTful API Server
     rest_api_server.start()
 
     # Create Web Server
-    web_server = WebServer(WEB_CONFIG_FILE, data_manager)
+    web_server = WebServer(WEB_CONFIG_FILE, core_manager)
 
     # Run Web Server
     web_server.start()

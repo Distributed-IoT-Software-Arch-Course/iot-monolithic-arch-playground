@@ -1,20 +1,19 @@
+from application.core_manager import CoreManager
 from flask import Flask, request, render_template
 import os
 import yaml
 import threading
 
-from data.manager.data_manager import DataManager
-
 
 class WebServer:
 
-    def __init__(self, config_file:str, data_manager: DataManager):
+    def __init__(self, config_file:str, core_manager: CoreManager):
 
         # Server Thread
         self.server_thread = None
 
         # Save the data manager
-        self.data_manager = data_manager
+        self.core_manager = core_manager
 
         # Save the configuration file
         self.config_file = config_file
@@ -62,17 +61,17 @@ class WebServer:
 
     def locations(self):
         """ Get all locations and render the locations.html template"""
-        location_list = self.data_manager.get_all_locations()
+        location_list = self.core_manager.get_all_locations()
         return render_template('locations.html', locations=location_list)
 
     def devices(self, location_id):
         """ Get all devices for a specific location and render the devices.html template"""
-        device_list = self.data_manager.get_devices_by_location(location_id)
+        device_list = self.core_manager.get_devices_by_location(location_id)
         return render_template('devices.html', devices=device_list, location_id=location_id)
 
     def telemetry(self, location_id, device_id):
         """ Get telemetry data for a specific device and render the telemetry.html template"""
-        telemetry_data = self.data_manager.get_telemetry_data_by_device_id(device_id)
+        telemetry_data = self.core_manager.get_telemetry_data_by_device_id(device_id)
         return render_template('telemetry.html', telemetry_data=telemetry_data, location_id=location_id, device_id=device_id)
 
     def run_server(self):

@@ -18,7 +18,9 @@ The idea of the architecture (using the framework [https://mermaid.js.org/](http
 ```mermaid
 graph TD
   subgraph Presentation-Layer
-    A1[Web Interface]
+    A1[Location Web Inteface]
+    A2[Device Web Inteface]
+    A3[Telemetry Web Inteface]
   end
   
   subgraph Communication-Layer
@@ -202,4 +204,24 @@ This layer is composed by the following sub modules (and the associated folders)
 - `mqtt`: Manages MQTT communication and data fetching using the Paho MQTT library
   - `mqtt_data_fetcher.py`: Subscribes to MQTT topics and fetches telemetry data from IoT devices
   - `dto`: Contains the Data Transfer Objects (DTOs) for MQTT data
+
+## Testing 
+
+In order to test the application you can run the `main.py` file that run the application activating 
+each layer of the architecture and run in parallel the different modules as independent threads.
+
+Once the application is running you can access the web interface by opening a web browser and navigating to the following URLs:
+
+- [http://localhost:7071/locations](http://localhost:7071/locations): Displays registered device locations
+- [http://localhost:7071/devices](http://localhost:7071/devices): Lists registered devices and their details associated with a target location
+- [http://localhost:7071/telemetry](http://localhost:7071/telemetry): Shows telemetry data for a selected device
+
+To simulate the data fetching from IoT devices, you can publish messages to the MQTT broker as an already registered device
+`d0001` using the script `test/mqtt/json_producer_default_device.py`.
+
+If you want to create additional devices or locations you can have a look at the following test scripts:
+
+- `test/http/create_location.py`: Creates a new location using the RESTful API
+- `test/http/create_device_1.py`: Creates a new device using the RESTful API
+- `test/mqtt/json_producer_device_1.py`: Publishes telemetry data for an existing device
 

@@ -133,3 +133,7 @@ class DataManager:
             return self.device_timeseries_data[device_id]
         else:
             return None
+
+    def is_location_registered(self, location_id):
+        """Check if a location is registered"""
+        return location_id in self.location_dictionary

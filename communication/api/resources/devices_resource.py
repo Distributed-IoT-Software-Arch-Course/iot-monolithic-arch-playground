@@ -1,6 +1,8 @@
 from json import JSONDecodeError
 from flask import request, Response
 from flask_restful import Resource, reqparse
+
+from application.core_manager import CoreManager
 from communication.api.dto.device_creation_request import DeviceCreationRequest
 from application.model.device_model import DeviceModel
 
@@ -8,15 +10,16 @@ from application.model.device_model import DeviceModel
 class DevicesResource(Resource):
 
     def __init__(self, **kwargs):
-        self.data_manager = kwargs['data_manager']
+        self.core_manager: CoreManager = kwargs['core_manager']
 
     def post(self, location_id):
+        """Create a new Device in the specified Location"""
         try:
             # Check if the location is correct
-            if location_id in self.data_manager.location_dictionary:
+            if self.core_manager.is_location_registered(location_id):
 
                 # Retrieve Location through its location_id
-                target_location = self.data_manager.location_dictionary[location_id]
+                target_location = self.core_manager.get_location_by_id(location_id)
 
                 # The boolean flag force the parsing of POST data as JSON irrespective of the mimetype
                 json_data = request.get_json(force=True)
@@ -37,7 +40,7 @@ class DevicesResource(Resource):
                                                    device_creation_request.latitude,
                                                    device_creation_request.longitude)
 
-                    self.data_manager.add_device(location_id, new_device_model)
+                    self.core_manager.add_device(location_id, new_device_model)
                     return Response(status=201, headers={"Location": request.url+"/"+new_device_model.uuid})  # Force the No-Content Response
             else:
                 return {'error': "Location Not Found !"}, 404
@@ -47,9 +50,10 @@ class DevicesResource(Resource):
             return {'error': "Generic Internal Server Error ! Reason: " + str(e)}, 500
 
     def get(self, location_id):
+        """Retrieve the list of Devices associated to a specific Location"""
 
         # Check if the provided Location Id in the path is correct
-        if location_id in self.data_manager.location_dictionary:
+        if self.core_manager.is_location_registered(location_id):
 
             # Check for query arguments
             parser = reqparse.RequestParser()
@@ -65,7 +69,7 @@ class DevicesResource(Resource):
                 type_filter = args["type"]
 
             # Retrieve Location through its location_id
-            target_location = self.data_manager.location_dictionary[location_id]
+            target_location = self.core_manager.get_location_by_id(location_id)
 
             # Iterate over the dictionary to build a serializable device list
             device_list = []

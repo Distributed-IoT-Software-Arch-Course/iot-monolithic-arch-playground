@@ -1,6 +1,7 @@
 from json import JSONDecodeError
 from flask import request, Response
 from flask_restful import Resource
+from application.core_manager import CoreManager
 from communication.api.dto.location_entity_response import LocationEntityResponse
 from communication.api.dto.location_update_request import LocationUpdateRequest
 from application.model.location_model import LocationModel
@@ -9,12 +10,13 @@ from application.model.location_model import LocationModel
 class LocationResource(Resource):
 
     def __init__(self, **kwargs):
-        self.data_manager = kwargs['data_manager']
+        self.core_manager: CoreManager = kwargs['core_manager']
 
     def get(self, location_id):
+        """ Get a location by its UUID """
 
-        if location_id in self.data_manager.location_dictionary:
-            location = self.data_manager.location_dictionary[location_id]
+        if self.core_manager.is_location_registered(location_id):
+            location = self.core_manager.get_location_by_id(location_id)
 
             # Iterate over the dictionary to build a serializable device id list
             device_id_list = []
@@ -31,9 +33,10 @@ class LocationResource(Resource):
             return {'error': "Location Not Found !"}, 404
 
     def delete(self, location_id):
+        """ Delete a location by its UUID """
         try:
-            if location_id in self.data_manager.location_dictionary:
-                self.data_manager.remove_location(location_id)
+            if self.core_manager.is_location_registered(location_id):
+                self.core_manager.remove_location(location_id)
                 return Response(status=204)
             else:
                 return {'error': "Location UUID not found"}, 404
@@ -41,22 +44,23 @@ class LocationResource(Resource):
             return {'error': "Generic Internal Server Error ! Reason: " + str(e)}, 500
 
     def put(self, location_id):
+        """ Update a location by its UUID """
 
         try:
-            if location_id in self.data_manager.location_dictionary:
+            if self.core_manager.is_location_registered(location_id):
 
                 # The boolean flag force the parsing of POST data as JSON irrespective of the mimetype
                 json_data = request.get_json(force=True)
                 location_update_request = LocationUpdateRequest(**json_data)
 
-                if location_update_request.uuid not in self.data_manager.location_dictionary:
-                    return {'error': "Location UUID not found exists"}, 404  # return data and 200 OK code
+                if self.core_manager.is_location_registered(location_update_request.uuid):
+                    return {'error': "Location UUID not found exists"}, 404
                 else:
                     updated_location_model = LocationModel(location_update_request.uuid,
                                                            location_update_request.name,
                                                            location_update_request.latitude,
                                                            location_update_request.longitude)
-                    self.data_manager.update_location(updated_location_model)
+                    self.core_manager.update_location(updated_location_model)
                     return Response(status=204)
             else:
                 return {'error': "Location UUID not found"}, 404

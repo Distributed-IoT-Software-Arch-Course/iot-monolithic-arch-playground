@@ -1,5 +1,7 @@
 from flask import Flask, request
 from flask_restful import Api
+
+from application.core_manager import CoreManager
 from communication.api.resources.device_resource import DeviceResource
 from communication.api.resources.devices_resource import DevicesResource
 from communication.api.resources.locations_resource import LocationsResource
@@ -8,12 +10,16 @@ import threading
 import yaml
 import os
 
+
 class RestApiServer:
+    """
+    RESTful API Server designed to manage the Inventory of IoT Devices
+    """
 
     # Default Endpoint Prefix
     DEFAULT_ENDPOINT_PREFIX = "/api/iot/inventory"
 
-    def __init__(self, config_file, data_manager):
+    def __init__(self, config_file: str, core_manager: CoreManager):
 
         # Initialize REST API Server and Flask Application to None
         # They will be initialized in the init_rest_api method
@@ -27,7 +33,7 @@ class RestApiServer:
         self.config_file = config_file
 
         # Data Manager
-        self.data_manager = data_manager
+        self.core_manager = core_manager
 
         # Set a default configuration
         self.configuration_dict = {
@@ -71,26 +77,26 @@ class RestApiServer:
 
         # Add Resources and Endpoints
         self.api.add_resource(LocationsResource, self.configuration_dict['rest']['api_prefix'] + '/location',
-                         resource_class_kwargs={'data_manager': self.data_manager},
-                         endpoint="locations",
-                         methods=['GET', 'POST'])
+                              resource_class_kwargs={'core_manager': self.core_manager},
+                              endpoint="locations",
+                              methods=['GET', 'POST'])
 
         self.api.add_resource(LocationResource, self.configuration_dict['rest']['api_prefix'] + '/location/<string:location_id>',
-                         resource_class_kwargs={'data_manager': self.data_manager},
-                         endpoint='location',
-                         methods=['GET', 'PUT', 'DELETE'])
+                              resource_class_kwargs={'core_manager': self.core_manager},
+                              endpoint='location',
+                              methods=['GET', 'PUT', 'DELETE'])
 
         self.api.add_resource(DevicesResource,
-                         self.configuration_dict['rest']['api_prefix'] + '/location/<string:location_id>/device',
-                         resource_class_kwargs={'data_manager': self.data_manager},
-                         endpoint="devices",
-                         methods=['GET', 'POST'])
+                              self.configuration_dict['rest']['api_prefix'] + '/location/<string:location_id>/device',
+                              resource_class_kwargs={'core_manager': self.core_manager},
+                              endpoint="devices",
+                              methods=['GET', 'POST'])
 
         self.api.add_resource(DeviceResource, self.configuration_dict['rest'][
             'api_prefix'] + '/location/<string:location_id>/device/<string:device_id>',
-                         resource_class_kwargs={'data_manager': self.data_manager},
-                         endpoint='device',
-                         methods=['GET', 'PUT', 'DELETE'])
+                              resource_class_kwargs={'core_manager': self.core_manager},
+                              endpoint='device',
+                              methods=['GET', 'PUT', 'DELETE'])
 
     def run_server(self):
         """ Start the REST API Server """
