@@ -21,13 +21,13 @@ graph TD
     B2[RESTful API]
   end
   
-  subgraph BusinessLogic-Layer
-    C1[Business Logic Services]
+  subgraph Logic-Layer
+    C1[Application Logic Services]
   end
   
   subgraph DataAccess-Layer
     D1[Protocol Handlers - MQTT]
-    D2[Data Management]
+    D2[Data Manager]
   end
   
   subgraph DataStorage-Layer
@@ -36,8 +36,8 @@ graph TD
   end
 
   Presentation-Layer --> Application-Layer
-  Application-Layer --> BusinessLogic-Layer
-  BusinessLogic-Layer --> DataAccess-Layer
+  Application-Layer --> Logic-Layer
+  Logic-Layer --> DataAccess-Layer
   DataAccess-Layer --> DataStorage-Layer
 ```
 
@@ -92,49 +92,6 @@ graph TD
        - Time-Series Database (optional for telemetry):
        - Technologies: InfluxDB, TimescaleDB
        - Responsibilities: Efficiently store and query time-series telemetry data.
-
-### Detailed Architecture Diagram
-
-Below is a high-level architecture diagram outlining the components and their interactions:
-
-```sql
- +-------------------------+
- |     Presentation Layer  |
- |-------------------------|
- |      Web Interface      |
- +-------------------------+
-             |
-             V
- +-------------------------+
- |     Application Layer   |
- |-------------------------|
- |       Web Server        |
- |      RESTful API        |
- +-------------------------+
-             |
-             V
- +-------------------------+
- |   Business Logic Layer  |
- |-------------------------|
- |  Business Logic Services|
- +-------------------------+
-             |
-             V
- +-------------------------+
- |   Data Access Layer     |
- |-------------------------|
- | Protocol Handlers (MQTT)|
- | Data Management         |
- +-------------------------+
-             |
-             V
- +-------------------------+
- |     Data Storage Layer  |
- |-------------------------|
- |      SQL Database       |
- |      Time-Series DB     |
- +-------------------------+
-```
 
 ### Workflow
 
