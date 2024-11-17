@@ -7,6 +7,8 @@ import os
 import threading
 
 class MqttDataFetcher:
+    """ MQTT Data Fetcher Class in charge of fetching data from the MQTT Broker
+        The fetcher is executed in a separate thread in order to avoid blocking the main thread."""
 
     def __init__(self, config_file: str, core_manager: CoreManager):
 
