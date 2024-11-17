@@ -17,9 +17,9 @@ The idea of the architecture (using the framework [https://mermaid.js.org/](http
 ```mermaid
 graph TD
   subgraph Presentation-Layer
-    A1[Location Web Inteface]
-    A2[Device Web Inteface]
-    A3[Telemetry Web Inteface]
+    A1[Location Web Interface]
+    A2[Device Web Interface]
+    A3[Telemetry Web Interface]
   end
   
   subgraph Communication-Layer
