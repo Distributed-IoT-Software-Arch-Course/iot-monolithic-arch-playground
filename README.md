@@ -1,9 +1,8 @@
 # IoT Monolithic Software Architecture Playground
 
-
 This project is designed as an IoT Monolithic Software Architecture Playground, 
 demonstrating a structured approach to building an IoT application using an 
-n-Tier architecture. The architecture is divided into five distinct layers, 
+**n-Tier** architecture. The architecture is divided into five distinct layers, 
 each responsible for specific functionalities, ensuring modularity, 
 scalability, and maintainability.
 
@@ -48,47 +47,39 @@ graph TD
   DataAccess-Layer --> DataStorage-Layer
 ```
 
-# System Architecture Description
+## System Architecture Description
 
-The system architecture is structured into five distinct layers, each responsible for specific functionalities, ensuring a modular and scalable design for the Internet of Things (IoT) application. The layers are as follows:
+The system architecture is structured into five distinct layers, each responsible for specific functionalities, 
+ensuring a modular and scalable design for the Internet of Things (IoT) application. The layers are as follows:
 
-## 1. Presentation Layer
+### 1. Presentation Layer
 - **Web Interface**: This component provides the user interface for the system, allowing users to interact with the application through a web browser. It displays device information, telemetry data, and other relevant details.
 
-## 2. Communication Layer
+### 2. Communication Layer
 - **Web Server**: Handles HTTP requests from the Web Interface and other clients. It serves static and dynamic content and manages incoming and outgoing web traffic.
 - **RESTful API**: Exposes system functionalities and data through RESTful endpoints, allowing external applications to interact with the system programmatically.
 - **MQTT Data Fetcher**: Manages MQTT communication, subscribing to MQTT topics to collect device information and telemetry data from various devices.
 
-## 3. Application Layer
+### 3. Application Layer
 - **Core Services**: Implements the business logic of the application. It processes data received from the Communication Layer, executes core application functionalities, and manages the flow of information between different layers.
 
-## 4. Data Access Layer
+### 4. Data Access Layer
 - **Data Management**: Provides an abstraction layer for data access. It handles CRUD operations (Create, Read, Update, Delete) and ensures data integrity and consistency when interacting with the underlying storage systems.
 
-## 5. Data Storage Layer
+### 5. Data Storage Layer
 - **SQL Database**: Stores structured data such as device inventory and configuration settings in a relational database.
 - **Time-Series DB**: Stores time-series data, such as telemetry data from IoT devices, which is optimized for handling large volumes of time-stamped information.
+- **Note**: In this example the Data Storage Layer is not implemented and the Data Access Layer interacts with the data directly through an in memory data structure.
 
-## Data Flow
-
-1. **Presentation Layer**: Users interact with the Web Interface to view and manage device information and telemetry data.
-2. **Communication Layer**:
-   - The Web Server processes HTTP requests from the Web Interface.
-   - The RESTful API provides endpoints for accessing system functionalities and data.
-   - The MQTT Data Fetcher collects data from IoT devices via MQTT protocol.
-3. **Application Layer**: Core Services process the incoming data and perform necessary business logic operations.
-4. **Data Access Layer**: Data Management handles the interaction with the storage systems, ensuring data is correctly saved and retrieved.
-5. **Data Storage Layer**: Data is stored in the SQL Database and the Time-Series DB as appropriate.
-
-This architecture ensures a clear separation of concerns, making the system modular, scalable, and easier to maintain. Each layer focuses on specific responsibilities, facilitating independent development, testing, and scaling of different parts of the system.
+This architecture ensures a clear separation of concerns, making the system modular, scalable, and easier to maintain. 
+Each layer focuses on specific responsibilities, facilitating independent development, testing, and scaling of different parts of the system.
 
 This example of an n-Tier architecture separates concerns into distinct layers, improving maintainability, scalability, and flexibility. 
 Each layer can be developed, deployed, and scaled independently, allowing for a robust and flexible IoT system.
 
-# Decision to Implement a Closed Layer Approach
+## Decision to Implement a Closed Layer Approach
 
-## Closed Layer Architecture
+### Closed Layer Architecture
 
 In a closed layer architecture, each layer can only interact with the layer directly below it. This ensures a clear separation of concerns and encapsulation, making the system modular and easier to maintain.
 
@@ -102,20 +93,20 @@ This approach adheres to the principle of **layers of isolation**, which means:
 - Layers remain independent with well-defined interfaces.
 - Each layer has minimal knowledge of the inner workings of other layers.
 
-### Advantages of Closed Layer Architecture
+#### Advantages of Closed Layer Architecture
 
 - **Encapsulation**: Each layer is isolated, making it easier to manage and update.
 - **Maintainability**: Changes in one layer do not cascade to others, reducing the risk of introducing bugs.
 - **Scalability**: Individual layers can be scaled independently based on load requirements.
 
-### An Example of Open Layer Architecture
+#### An Example of Open Layer Architecture
 
 In an open layer architecture, any layer can bypass intermediate
 layers to directly interact with a lower layer. 
 For instance, the Presentation Layer 
 can directly access the Data Access Layer without going through the Application Layer.
 
-#### Potential Issues with Open Layer Architecture
+##### Potential Issues with Open Layer Architecture
  
 - Tight Coupling: Layers become tightly coupled, making the system more brittle and harder to maintain.
 - Increased Complexity: Direct interactions between non-adjacent layers can introduce complex dependencies.
@@ -225,3 +216,16 @@ If you want to create additional devices or locations you can have a look at the
 - `test/http/create_device_1.py`: Creates a new device using the RESTful API
 - `test/mqtt/json_producer_device_1.py`: Publishes telemetry data for an existing device
 
+Example of the Web Interface and Presentation Layer are the following:
+
+**Location List** available at [http://localhost:7071/locations](http://localhost:7071/locations)
+
+![Location List](images/location_list.png)
+
+**Device List** available at [http://localhost:7071/devices](http://localhost:7071/devices)
+
+![Device List](images/device_list.png)
+
+**Telemetry Data List** available at [http://localhost:7071/telemetry](http://localhost:7071/telemetry)
+
+![Device List](images/telemetry_list.png)
