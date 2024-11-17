@@ -71,9 +71,9 @@ class WebServer:
         return render_template('devices.html', devices=device_list, location_id=location_id)
 
     def telemetry(self, location_id, device_id):
-        """ Get telemetry data for a specific device and render the device_telemetry_data.html template"""
+        """ Get telemetry data for a specific device and render the telemetry.html template"""
         telemetry_data = self.data_manager.get_telemetry_data_by_device_id(device_id)
-        return render_template('device_telemetry_data.html', telemetry_data=telemetry_data, location_id=location_id, device_id=device_id)
+        return render_template('telemetry.html', telemetry_data=telemetry_data, location_id=location_id, device_id=device_id)
 
     def run_server(self):
         """ Run the Flask Web Server"""

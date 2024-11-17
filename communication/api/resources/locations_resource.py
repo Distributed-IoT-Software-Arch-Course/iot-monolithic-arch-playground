@@ -3,7 +3,7 @@ from flask import request, Response
 from flask_restful import Resource
 from communication.api.dto.location_entity_response import LocationEntityResponse
 from communication.api.dto.location_creation_request import LocationCreationRequest
-from logic.model.location_model import LocationModel
+from application.model.location_model import LocationModel
 
 
 class LocationsResource(Resource):

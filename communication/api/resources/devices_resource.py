@@ -2,7 +2,7 @@ from json import JSONDecodeError
 from flask import request, Response
 from flask_restful import Resource, reqparse
 from communication.api.dto.device_creation_request import DeviceCreationRequest
-from logic.model.device_model import DeviceModel
+from application.model.device_model import DeviceModel
 
 
 class DevicesResource(Resource):

@@ -1,6 +1,11 @@
 # IoT Monolithic Software Architecture Playground
 
-This project is associated to the IoT Monolithic Software Architecture Laboratory.....
+
+This project is designed as an IoT Monolithic Software Architecture Playground, 
+demonstrating a structured approach to building an IoT application using an 
+n-Tier architecture. The architecture is divided into five distinct layers, 
+each responsible for specific functionalities, ensuring modularity, 
+scalability, and maintainability.
 
 ## n-Tier Architecture Overview
 
@@ -78,3 +83,123 @@ This architecture ensures a clear separation of concerns, making the system modu
 
 This example of an n-Tier architecture separates concerns into distinct layers, improving maintainability, scalability, and flexibility. 
 Each layer can be developed, deployed, and scaled independently, allowing for a robust and flexible IoT system.
+
+# Decision to Implement a Closed Layer Approach
+
+## Closed Layer Architecture
+
+In a closed layer architecture, each layer can only interact with the layer directly below it. This ensures a clear separation of concerns and encapsulation, making the system modular and easier to maintain.
+
+- **Presentation Layer** can only communicate with the **Communication Layer**.
+- **Communication Layer** can only communicate with the **Application Layer**.
+- **Application Layer** can only communicate with the **Data Access Layer**.
+- **Data Access Layer** can only communicate with the **Data Storage Layer**.
+
+This approach adheres to the principle of **layers of isolation**, which means:
+- Changes in one layer do not affect other layers.
+- Layers remain independent with well-defined interfaces.
+- Each layer has minimal knowledge of the inner workings of other layers.
+
+### Advantages of Closed Layer Architecture
+
+- **Encapsulation**: Each layer is isolated, making it easier to manage and update.
+- **Maintainability**: Changes in one layer do not cascade to others, reducing the risk of introducing bugs.
+- **Scalability**: Individual layers can be scaled independently based on load requirements.
+
+### An Example of Open Layer Architecture
+
+In an open layer architecture, any layer can bypass intermediate
+layers to directly interact with a lower layer. 
+For instance, the Presentation Layer 
+can directly access the Data Access Layer without going through the Application Layer.
+
+#### Potential Issues with Open Layer Architecture
+ 
+- Tight Coupling: Layers become tightly coupled, making the system more brittle and harder to maintain.
+- Increased Complexity: Direct interactions between non-adjacent layers can introduce complex dependencies.
+- Difficult to Isolate: Changes in one layer can have cascading effects on multiple layers, making it difficult to isolate and fix issues.
+
+Example of the same architecture with an open layer approach:
+
+```mermaid
+graph TD
+  subgraph Presentation-Layer
+    A1[Web Interface]
+  end
+  
+  subgraph Communication-Layer
+    B1[Web Server]
+    B2[RESTful API]
+    B3[MQTT Data Fetcher]
+  end
+  
+  subgraph Application-Layer
+    C1[Core Services]
+  end
+  
+  subgraph DataAccess-Layer
+    D2[Data Management]
+  end
+  
+  subgraph DataStorage-Layer
+    E1[SQL Database]
+    E2[Time-Series DB]
+  end
+
+  Presentation-Layer --> Communication-Layer
+  Presentation-Layer --> DataAccess-Layer
+  Communication-Layer --> Application-Layer
+  Communication-Layer --> DataAccess-Layer
+  Application-Layer --> DataAccess-Layer
+  DataAccess-Layer --> DataStorage-Layer
+```
+
+The choice between open and closed layers depends on the specific needs 
+of the application. 
+Closed layers provide better encapsulation and maintainability, 
+while open layers offer flexibility at the cost of 
+increased complexity and tighter coupling. For most applications, 
+especially those requiring high maintainability 
+and scalability, a closed layer architecture is preferred.
+
+## File Structure Overview
+
+The project is structured into different directories, each representing a specific layer of the n-Tier architecture.
+The main folders and files of the project are as follows:
+
+- `presentation`: Contains the web interface components for the system
+- `communication`: Includes the web server, RESTful API, and MQTT data fetcher
+- `application`: Contains the core services of the application
+- `data`: Manages data access and interactions with the storage systems
+- `config`: Stores configuration files for the system
+- `test`: Includes test scripts for different components of the system to interact with the layers
+- `main.py`: Entry point of the application, orchestrating the interactions between different layers
+
+### Presentation Layer
+
+The `presentation` directory contains the web interface components, including HTML, CSS, and JavaScript files for the user interface.
+Involved files at the moment are just simple HTML files, but in a real-world scenario, this directory would contain more complex web application files.
+Included files are:
+
+- `locations.html`: Displays registered device locations
+- `devices.html`: Lists registered devices and their details associated to a target location
+- `telemetry.html`: Shows telemetry data for a selected device
+
+### Communication Layer
+
+The `communication` directory includes the web server, RESTful API, and MQTT data fetcher components.
+These components handle incoming requests, expose system functionalities, and collect data from IoT devices.
+The files in this directory are:
+
+This layer is composed by the following sub modules (and the associated folders):
+
+- `web`: Contains the web server implementation using Flask
+  - `web_server.py`: Implements the web server using Flask and renders the web interface of the presentation layer
+- `api`: Implements the RESTful API endpoints for the system using Flask-RESTful
+  - `restful_api_server.py`: Defines the RESTful API endpoints for the system
+  - `resources`: Contains the resources for the RESTful API endpoints
+  - `dto`: Contains the Data Transfer Objects (DTOs) for the API
+- `mqtt`: Manages MQTT communication and data fetching using the Paho MQTT library
+  - `mqtt_data_fetcher.py`: Subscribes to MQTT topics and fetches telemetry data from IoT devices
+  - `dto`: Contains the Data Transfer Objects (DTOs) for MQTT data
+

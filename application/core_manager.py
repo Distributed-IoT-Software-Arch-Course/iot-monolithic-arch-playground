@@ -29,4 +29,4 @@ class CoreManager:
         :param device_id: Device id associated with telemetry data
         :return: List of telemetry data
         """
-        return self.data_manager.get_device_telemetry_data(device_id)
+        return self.data_manager.get_telemetry_data_by_device_id(device_id)

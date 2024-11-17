@@ -1,7 +1,6 @@
-from logic.model.device_model import DeviceModel
-from logic.model.location_model import LocationModel
-import os
-import yaml
+from application.model.device_model import DeviceModel
+from application.model.location_model import LocationModel
+
 
 class DataManager:
     """
