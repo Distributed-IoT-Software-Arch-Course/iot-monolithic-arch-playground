@@ -16,18 +16,18 @@ graph TD
     A1[Web Interface]
   end
   
-  subgraph Application-Layer
+  subgraph Communication-Layer
     B1[Web Server]
     B2[RESTful API]
+    B3[MQTT Data Fetcher]
   end
   
-  subgraph Logic-Layer
-    C1[Application Logic Services]
+  subgraph Application-Layer
+    C1[Core Services]
   end
   
   subgraph DataAccess-Layer
-    D1[Protocol Handlers - MQTT]
-    D2[Data Manager]
+    D2[Data Management]
   end
   
   subgraph DataStorage-Layer
@@ -35,76 +35,46 @@ graph TD
     E2[Time-Series DB]
   end
 
-  Presentation-Layer --> Application-Layer
-  Application-Layer --> Logic-Layer
-  Logic-Layer --> DataAccess-Layer
+  Presentation-Layer --> Communication-Layer
+  Communication-Layer --> Application-Layer
+  Application-Layer --> DataAccess-Layer
   DataAccess-Layer --> DataStorage-Layer
 ```
 
-1. **Presentation Layer (Client Tier)**
-    - Responsibilities:
-      - Provide a user interface for interacting with the information and data of IoT devices. 
-      - Display device information and telemetry data. 
-      - Allow users to interact with the RESTful API
-    - Components:
-      - Web Interface (Frontend):
-        - Technologies: HTML, CSS, JavaScript (React.js, Angular, or Vue.js)
-        - Responsibilities: Display data, provide user controls, and handle user inputs.
-2. **Application Layer (Web Server Tier)**
-    - Responsibilities:
-      - Serve the web interface to clients. 
-      - Handle HTTP RESTful API requests.
-      - Process business logic.
-    - Components:
-      - Web Server: 
-        - Technologies: Node.js (Express.js), Django, or Flask
-        - Responsibilities: Serve static content (web interface) and handle dynamic content (API requests).
-      - RESTful API:
-        - Technologies: Express.js (Node.js), Django REST Framework (Python), Spring Boot (Java)
-        - Responsibilities: Provide endpoints for accessing device information and telemetry data.
-3. **Business Logic Layer (Service Tier)**
-    - Responsibilities:
-      - Process data and apply business rules. 
-      - Interface between the web server and data sources. 
-    - Components:
-      - Business Logic Services:
-        - Technologies: Node.js, Python, Java 
-        - Responsibilities: Implement business rules, data processing, and interaction with data access layer.
-4. **Data Access Layer (Integration Tier)**
-    - Responsibilities:
-      - Interface with different data sources and protocols. 
-      - Collect device information and telemetry data.
-    - Components:
-      - Protocol Handlers:
-        - Technologies: MQTT.js (Node.js), Paho MQTT (Python), HiveMQ (Java)
-    - Responsibilities: Collect data from devices using protocols like MQTT. 
-      - Data Aggregators:
-        - Responsibilities: Aggregate data from multiple protocol handlers and send it to the data storage layer.
-5. **Data Storage Layer (Data Tier)**
-   - Responsibilities:
-     - Store device information and telemetry data.
-     - Provide data access to the upper layers.
-   - Components:
-     - Database:
-        - Technologies: PostgreSQL, MySQL, MongoDB
-        - **In our simplified scenario both structured and unstructured data will be stored in memory.**
-   - Responsibilities: Store structured device information (inventory) and unstructured telemetry data.
-       - Time-Series Database (optional for telemetry):
-       - Technologies: InfluxDB, TimescaleDB
-       - Responsibilities: Efficiently store and query time-series telemetry data.
+# System Architecture Description
 
-### Workflow
+The system architecture is structured into five distinct layers, each responsible for specific functionalities, ensuring a modular and scalable design for the Internet of Things (IoT) application. The layers are as follows:
 
-1. Device Information Collection:
-   - Protocol handlers connect to devices using protocols like MQTT.
-   - Data aggregators collect and format the data for storage.
-   - The formatted data is stored in the relational database.
-2. Device Data Collection (Telemetry):
-   - Protocol handlers collect telemetry data from devices.
-   - Data aggregators process and store telemetry data in the time-series database.
-3. Data Exposure:
-   - The RESTful API exposes device information and telemetry data to clients.
-   - The web interface interacts with the RESTful API to display data to users.
+## 1. Presentation Layer
+- **Web Interface**: This component provides the user interface for the system, allowing users to interact with the application through a web browser. It displays device information, telemetry data, and other relevant details.
+
+## 2. Communication Layer
+- **Web Server**: Handles HTTP requests from the Web Interface and other clients. It serves static and dynamic content and manages incoming and outgoing web traffic.
+- **RESTful API**: Exposes system functionalities and data through RESTful endpoints, allowing external applications to interact with the system programmatically.
+- **MQTT Data Fetcher**: Manages MQTT communication, subscribing to MQTT topics to collect device information and telemetry data from various devices.
+
+## 3. Application Layer
+- **Core Services**: Implements the business logic of the application. It processes data received from the Communication Layer, executes core application functionalities, and manages the flow of information between different layers.
+
+## 4. Data Access Layer
+- **Data Management**: Provides an abstraction layer for data access. It handles CRUD operations (Create, Read, Update, Delete) and ensures data integrity and consistency when interacting with the underlying storage systems.
+
+## 5. Data Storage Layer
+- **SQL Database**: Stores structured data such as device inventory and configuration settings in a relational database.
+- **Time-Series DB**: Stores time-series data, such as telemetry data from IoT devices, which is optimized for handling large volumes of time-stamped information.
+
+## Data Flow
+
+1. **Presentation Layer**: Users interact with the Web Interface to view and manage device information and telemetry data.
+2. **Communication Layer**:
+   - The Web Server processes HTTP requests from the Web Interface.
+   - The RESTful API provides endpoints for accessing system functionalities and data.
+   - The MQTT Data Fetcher collects data from IoT devices via MQTT protocol.
+3. **Application Layer**: Core Services process the incoming data and perform necessary business logic operations.
+4. **Data Access Layer**: Data Management handles the interaction with the storage systems, ensuring data is correctly saved and retrieved.
+5. **Data Storage Layer**: Data is stored in the SQL Database and the Time-Series DB as appropriate.
+
+This architecture ensures a clear separation of concerns, making the system modular, scalable, and easier to maintain. Each layer focuses on specific responsibilities, facilitating independent development, testing, and scaling of different parts of the system.
 
 This example of an n-Tier architecture separates concerns into distinct layers, improving maintainability, scalability, and flexibility. 
 Each layer can be developed, deployed, and scaled independently, allowing for a robust and flexible IoT system.

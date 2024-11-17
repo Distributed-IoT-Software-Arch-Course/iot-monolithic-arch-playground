@@ -1,10 +1,18 @@
 from logic.model.device_model import DeviceModel
 from logic.model.location_model import LocationModel
-
+import os
+import yaml
 
 class DataManager:
+    """
+    DataManager class is responsible for managing the data of the application.
+    Abstracts the data storage and retrieval operations.
+    In this implementation everything is stored in memory.
+    """
 
     location_dictionary = {}
+
+    device_timeseries_data = {}
 
     def init_demo_data(self):
         """Initialize the DataManager with some demo data"""
@@ -52,6 +60,17 @@ class DataManager:
         if location_uuid in self.location_dictionary.keys():
             del self.location_dictionary[location_uuid]
 
+    def get_location_by_id(self, location_id):
+        """Return a location by its id"""
+        if location_id in self.location_dictionary:
+            return self.location_dictionary[location_id]
+        else:
+            return None
+
+    def get_all_locations(self):
+        """Return a list of all locations"""
+        return self.location_dictionary.values()
+
     # DEVICE MANAGEMENT
 
     def add_device(self, location_id, new_device):
@@ -89,9 +108,12 @@ class DataManager:
         else:
             raise IndexError("Error Location Id is not correct !")
 
-    def get_all_locations(self):
-        """Return a list of all locations"""
-        return self.location_dictionary.values()
+    def get_device_by_id(self, device_id):
+        """Return a device by its id"""
+        for location in self.location_dictionary.values():
+            if device_id in location.device_dictionary:
+                return location.device_dictionary[device_id]
+        return None
 
     def get_devices_by_location(self, location_id):
         """Return a list of all devices for a given location"""
@@ -99,3 +121,16 @@ class DataManager:
             return list(self.location_dictionary[location_id].device_dictionary.values())
         else:
             raise IndexError("Error Location Id is not correct !")
+
+    def add_device_telemetry_data(self, device_id, telemetry_data):
+        """Add a new telemetry data for a given device"""
+        if device_id not in self.device_timeseries_data:
+            self.device_timeseries_data[device_id] = []
+        self.device_timeseries_data[device_id].append(telemetry_data)
+
+    def get_telemetry_data_by_device_id(self, device_id):
+        """Return the telemetry data for a given device"""
+        if device_id in self.device_timeseries_data:
+            return self.device_timeseries_data[device_id]
+        else:
+            return None

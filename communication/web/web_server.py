@@ -3,9 +3,12 @@ import os
 import yaml
 import threading
 
+from data.manager.data_manager import DataManager
+
+
 class WebServer:
 
-    def __init__(self, config_file, data_manager):
+    def __init__(self, config_file:str, data_manager: DataManager):
 
         # Server Thread
         self.server_thread = None
@@ -16,7 +19,7 @@ class WebServer:
         # Save the configuration file
         self.config_file = config_file
 
-        # Get the main application directory
+        # Get the main communication directory
         main_app_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
         # Construct the file path
@@ -39,13 +42,14 @@ class WebServer:
         # Add URL rules to the Flask app mapping the URL to the function
         self.app.add_url_rule('/locations', 'locations', self.locations)
         self.app.add_url_rule('/location/<string:location_id>/devices', 'devices', self.devices)
+        self.app.add_url_rule('/location/<string:location_id>/device/<string:device_id>/telemetry', 'telemetry', self.telemetry)
 
     def read_configuration_file(self):
         """ Read Configuration File for the Web Server
          :return:
         """
 
-        # Get the main application directory
+        # Get the main communication directory
         main_app_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
         # Construct the file path
@@ -65,6 +69,11 @@ class WebServer:
         """ Get all devices for a specific location and render the devices.html template"""
         device_list = self.data_manager.get_devices_by_location(location_id)
         return render_template('devices.html', devices=device_list, location_id=location_id)
+
+    def telemetry(self, location_id, device_id):
+        """ Get telemetry data for a specific device and render the device_telemetry_data.html template"""
+        telemetry_data = self.data_manager.get_telemetry_data_by_device_id(device_id)
+        return render_template('device_telemetry_data.html', telemetry_data=telemetry_data, location_id=location_id, device_id=device_id)
 
     def run_server(self):
         """ Run the Flask Web Server"""

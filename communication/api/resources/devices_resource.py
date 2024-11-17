@@ -1,7 +1,7 @@
 from json import JSONDecodeError
 from flask import request, Response
 from flask_restful import Resource, reqparse
-from application.api.dto.device_creation_request import DeviceCreationRequest
+from communication.api.dto.device_creation_request import DeviceCreationRequest
 from logic.model.device_model import DeviceModel
 
 

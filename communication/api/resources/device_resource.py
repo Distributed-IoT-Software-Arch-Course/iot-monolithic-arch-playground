@@ -1,7 +1,7 @@
 from json import JSONDecodeError
 from flask import request, Response
 from flask_restful import Resource
-from application.api.dto.device_update_request import DeviceUpdateRequest
+from communication.api.dto.device_update_request import DeviceUpdateRequest
 from logic.model.device_model import DeviceModel
 
 

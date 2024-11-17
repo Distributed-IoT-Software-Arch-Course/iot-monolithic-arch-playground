@@ -1,9 +1,9 @@
 from flask import Flask, request
 from flask_restful import Api
-from application.api.resources.device_resource import DeviceResource
-from application.api.resources.devices_resource import DevicesResource
-from application.api.resources.locations_resource import LocationsResource
-from application.api.resources.location_resource import LocationResource
+from communication.api.resources.device_resource import DeviceResource
+from communication.api.resources.devices_resource import DevicesResource
+from communication.api.resources.locations_resource import LocationsResource
+from communication.api.resources.location_resource import LocationResource
 import threading
 import yaml
 import os
@@ -49,7 +49,7 @@ class RestApiServer:
          :return:
         """
 
-        # Get the main application directory
+        # Get the main communication directory
         main_app_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
         # Construct the file path

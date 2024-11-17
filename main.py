@@ -1,17 +1,23 @@
-from data.data_manager import DataManager
-from application.api.rest_api_server import RestApiServer
-from application.web.web_server import WebServer
+from data.manager.data_manager import DataManager
+from communication.api.rest_api_server import RestApiServer
+from communication.web.web_server import WebServer
+from communication.mqtt.mqtt_data_fetcher import MqttDataFetcher
+from application.core_manager import CoreManager
 
 API_CONFIG_FILE = "config/api_conf.yaml"
 WEB_CONFIG_FILE = "config/web_conf.yaml"
+MQTT_CONFIG_FILE = "config/mqtt_fetcher_conf.yaml"
 
 if __name__ == '__main__':
 
-    # Data Manager
+    # Data Manager initialization
     data_manager = DataManager()
 
     # Init some demo data on the Data Manager
     data_manager.init_demo_data()
+
+    # Create the Core Manager with the Data Manager reference
+    core_manager = CoreManager(data_manager)
 
     # Create RESTful API Server
     rest_api_server = RestApiServer(API_CONFIG_FILE, data_manager)
@@ -24,3 +30,9 @@ if __name__ == '__main__':
 
     # Run Web Server
     web_server.start()
+
+    # Create MQTT Data Fetcher
+    mqtt_data_fetcher = MqttDataFetcher(MQTT_CONFIG_FILE, core_manager)
+
+    # Run MQTT Data Fetcher
+    mqtt_data_fetcher.start()

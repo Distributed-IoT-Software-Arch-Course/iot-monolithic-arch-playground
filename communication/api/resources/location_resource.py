@@ -1,8 +1,8 @@
 from json import JSONDecodeError
 from flask import request, Response
 from flask_restful import Resource
-from application.api.dto.location_entity_response import LocationEntityResponse
-from application.api.dto.location_update_request import LocationUpdateRequest
+from communication.api.dto.location_entity_response import LocationEntityResponse
+from communication.api.dto.location_update_request import LocationUpdateRequest
 from logic.model.location_model import LocationModel
 
 
