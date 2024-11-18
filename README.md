@@ -29,11 +29,11 @@ graph TD
   end
   
   subgraph Application-Layer
-    C1[Core Services]
+    C1[Core Manager]
   end
   
   subgraph DataAccess-Layer
-    D2[Data Management]
+    D2[Data Manager]
   end
   
   subgraph DataStorage-Layer
